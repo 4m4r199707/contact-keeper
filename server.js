@@ -1,6 +1,11 @@
 const express = require('express');
-
+const connectDB = require('./config/db');
 const app= express();
+
+
+//Mongodb connect
+connectDB();
+
 
 app.get('/', (req, res) => 
 res.json({ msg: 'Welocome to the ContactKeeper API...'})
