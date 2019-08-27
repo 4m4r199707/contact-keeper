@@ -58,8 +58,39 @@ router.post('/', [ auth, [
 // @route PUT api/contacts/:id         adding new element :id placeholder
 //@desc    Update contacts
 //@access Private
-router.put('/:id', (req, res) => {          /// refers to current dir i.es /routes/contacts/:id
-    res.send('Update contact');
+router.put('/:id',auth, async (req, res) => {    
+   /// refers to current dir i.es /routes/contacts/:id
+    const { name, email, phone, type } = req.body;
+
+
+    // Build contact object
+    const contactFields = {};
+    if(name) contactFields.name = name;
+    if(email) contactFields.email = email;
+    if( phone ) contactFields.phone = phone;
+    if(type) contactFields.type = type;
+
+    try {
+        let contact = await Contact.findById(req.params.id);
+        
+        if(!contact) return res.status(404)({ msg: 'Contact not found '});
+
+        if(contact.user.toString() !== req.user.id){
+            return res.status(401).json({ msg: 'Not authorized '});
+        }
+
+        contact = await Contact.findByIdAndUpdate(req.params.id,
+            {$set: contactFields },
+            { new: true });
+        res.json(contact);
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).send('Server Error');
+    }
+
+
+   // Make sure user owns contact
+
 });
 
 
@@ -67,8 +98,24 @@ router.put('/:id', (req, res) => {          /// refers to current dir i.es /rout
 // @route DELETE api/contacts/:id
 //@desc    delete contact
 //@access Private
-router.delete('/:id', (req, res) => {          /// refers to current dir i.es /routes/contacts/:id
-    res.send('delete contacts');
+router.delete('/:id',auth, async(req, res) => {          /// refers to current dir i.es /routes/contacts/:id
+    try {
+        let contact = await Contact.findById(req.params.id);
+        
+        if(!contact) return res.status(404)({ msg: 'Contact not found '});
+
+        if(contact.user.toString() !== req.user.id){
+            return res.status(401).json({ msg: 'Not authorized '});
+        }
+
+        await Contact.findByIdAndDelete(req.params.id);
+
+        res.json("contact removed");
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).send('Server Error');
+    }
+
 });
 
 
