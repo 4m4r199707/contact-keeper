@@ -30,8 +30,7 @@ export default(state, action) => {
         case DELETE_CONTACT:
             return{
                 ...state,
-                contacts: state.contacts.filter
-                (contact => contact._id!== action.payload),
+                contacts: state.contacts.filter(contact => contact._id!== action.payload),
                 loading: false
             };
         
@@ -85,6 +84,6 @@ export default(state, action) => {
                 error: action.payload
             };
         default:
-            return state;
+            return state
     }
 }
