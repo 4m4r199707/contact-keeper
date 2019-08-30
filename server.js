@@ -11,10 +11,10 @@ connectDB();
 app.use(express.json({extended: false}));
 
 
-app.get('/', (req, res) => 
-res.json({ msg: 'Welocome to the ContactKeeper API...'})
-);
-
+// app.get('/', (req, res) => 
+// res.json({ msg: 'Welocome to the ContactKeeper API...'})
+// );
+// the above lines were used in the development
 
 // Define Routes
 
